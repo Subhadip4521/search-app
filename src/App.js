@@ -1,23 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React, { useEffect, useState } from "react";
+import { getuser } from "./data.js";
 
 function App() {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    getuser().then((user) => setData(user));
+  }, []);
+  const [search, setSearch] = useState("");
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div>
+        <input type="text" onChange={(e) => setSearch(e.target.value)} />
+        <button>Search</button>
+      </div>
+      <div>
+        {data ? (
+          data
+            ?.filter((e) => {
+              return search.toLowerCase() === ""
+                ? e
+                : e.title.toLowerCase().includes(search);
+               // : e.id.toString().includes(search);
+            })
+            .map((e) => (
+              <p key={e.id}>
+                <p>{e.id}</p>
+                <p>{e.body}</p>
+              </p>
+            ))
+        ) : (
+          <p>Fetching Data...</p>
+        )}
+      </div>
     </div>
   );
 }
